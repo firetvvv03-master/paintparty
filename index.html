@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Glow Bunny Paint Party - New Power-Ups</title>
+    <title>Glow Bunny Paint Party - Power-up 5s Timer</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Quicksand:wght@600;700&display=swap" rel="stylesheet">
     <style>
@@ -54,34 +54,44 @@
     <header class="w-full max-w-5xl glass-panel rounded-3xl p-3 sm:p-4 flex flex-col gap-2 z-10">
         <div class="flex justify-between items-center">
             <!-- Player Stats -->
-            <div class="flex items-center gap-2 sm:gap-3">
-                <div id="hud-player-avatar" class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-cyan-300 border-2 border-white flex items-center justify-center text-2xl shadow-inner">🐰</div>
+            <div class="flex items-center gap-2">
+                <div id="hud-p1-avatar" class="w-9 h-9 sm:w-11 sm:h-11 rounded-2xl bg-cyan-300 border-2 border-white flex items-center justify-center text-xl shadow-inner">🐰</div>
                 <div>
-                    <div id="hud-player-name" class="font-fredoka text-cyan-600 text-sm sm:text-base leading-none">Blinky</div>
-                    <div id="player-score" class="font-fredoka text-lg sm:text-2xl text-cyan-500">50%</div>
+                    <div id="hud-p1-name" class="font-fredoka text-cyan-600 text-xs sm:text-sm leading-none">Blinky</div>
+                    <div id="score-p1" class="font-fredoka text-base sm:text-xl text-cyan-500">50%</div>
+                </div>
+            </div>
+
+            <!-- COM Bot Stats (Hidden in Boss Mode) -->
+            <div id="hud-com-container" class="flex items-center gap-2">
+                <div id="hud-p2-avatar" class="w-9 h-9 sm:w-11 sm:h-11 rounded-2xl bg-lime-300 border-2 border-white flex items-center justify-center text-xl shadow-inner">🦊</div>
+                <div>
+                    <div id="hud-p2-name" class="font-fredoka text-lime-600 text-xs sm:text-sm leading-none">COM Bot</div>
+                    <div id="score-p2" class="font-fredoka text-base sm:text-xl text-lime-500">0%</div>
                 </div>
             </div>
 
             <!-- Timer Badge -->
-            <div class="glass-panel px-4 py-1 sm:py-2 rounded-2xl border-2 border-amber-300 bg-amber-50/80 text-center">
-                <div class="text-xs font-bold text-amber-600 uppercase tracking-wider">Time</div>
-                <div id="game-timer" class="font-fredoka text-2xl sm:text-3xl text-amber-500 leading-none">120</div>
+            <div class="glass-panel px-3 py-1 rounded-2xl border-2 border-amber-300 bg-amber-50/80 text-center">
+                <div class="text-[10px] font-bold text-amber-600 uppercase tracking-wider">Time</div>
+                <div id="game-timer" class="font-fredoka text-xl sm:text-2xl text-amber-500 leading-none">120</div>
             </div>
 
-            <!-- Opponent / Boss Stats -->
-            <div class="flex items-center gap-2 sm:gap-3 flex-row-reverse">
-                <div id="hud-opponent-avatar" class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-pink-300 border-2 border-white flex items-center justify-center text-2xl shadow-inner">🐱</div>
+            <!-- Boss Stats -->
+            <div class="flex items-center gap-2 flex-row-reverse">
+                <div id="hud-p3-avatar" class="w-9 h-9 sm:w-11 sm:h-11 rounded-2xl bg-pink-300 border-2 border-white flex items-center justify-center text-xl shadow-inner">🦄</div>
                 <div class="text-right">
-                    <div id="hud-opponent-name" class="font-fredoka text-pink-600 text-sm sm:text-base leading-none">Boss Dragon</div>
-                    <div id="ai-score" class="font-fredoka text-lg sm:text-2xl text-pink-500">50%</div>
+                    <div id="hud-p3-name" class="font-fredoka text-pink-600 text-xs sm:text-sm leading-none">Boss</div>
+                    <div id="score-p3" class="font-fredoka text-base sm:text-xl text-pink-500">50%</div>
                 </div>
             </div>
         </div>
 
         <!-- Live Paint Progress Bar -->
         <div class="w-full bg-slate-200/80 rounded-full h-4 sm:h-5 p-1 flex items-center shadow-inner overflow-hidden border border-white">
-            <div id="progress-player" class="bg-gradient-to-r from-cyan-400 to-sky-400 h-full rounded-full transition-all duration-300" style="width: 50%;"></div>
-            <div id="progress-ai" class="bg-gradient-to-r from-pink-400 to-rose-400 h-full rounded-full transition-all duration-300" style="width: 50%;"></div>
+            <div id="progress-p1" class="bg-gradient-to-r from-cyan-400 to-sky-400 h-full rounded-l-full transition-all duration-300" style="width: 50%;"></div>
+            <div id="progress-p2" class="bg-gradient-to-r from-lime-400 to-emerald-400 h-full transition-all duration-300 hidden" style="width: 0%;"></div>
+            <div id="progress-p3" class="bg-gradient-to-r from-pink-400 to-rose-400 h-full rounded-r-full transition-all duration-300" style="width: 50%;"></div>
         </div>
     </header>
 
@@ -98,7 +108,7 @@
     <footer class="w-full max-w-5xl flex items-center justify-between gap-4 z-10 px-2 mb-1">
         <div class="hidden sm:flex flex-col gap-1 text-xs font-bold text-purple-700/80 bg-white/60 p-3 rounded-2xl border border-white">
             <div>🎮 Arrow Keys / WASD to Move</div>
-            <div>✨ Collect Power-ups & Paint fast!</div>
+            <div>✨ Grab Power-ups & Paint territory!</div>
         </div>
 
         <div class="mx-auto sm:mx-0 grid grid-cols-3 gap-1.5 w-44 h-36 sm:w-48 sm:h-36 p-1 bg-white/40 rounded-3xl border-2 border-white/60 backdrop-blur-sm">
@@ -137,27 +147,18 @@
             <div class="text-left">
                 <label class="font-fredoka text-purple-700 text-sm">Select Game Mode:</label>
                 <div class="grid grid-cols-2 gap-2 mt-1">
-                    <button id="mode-boss" class="p-3 rounded-2xl border-2 border-purple-500 bg-purple-100 font-fredoka text-purple-700 text-sm shadow-md" onclick="setGameMode('boss')">👑 vs Boss Mode</button>
-                    <button id="mode-network" class="p-3 rounded-2xl border-2 border-white bg-white/60 font-fredoka text-purple-800 text-sm shadow-md" onclick="setGameMode('network')">🌐 Duel over WiFi</button>
+                    <button id="mode-boss" class="p-3 rounded-2xl border-2 border-purple-500 bg-purple-100 font-fredoka text-purple-700 text-sm shadow-md" onclick="setGameMode('boss')">👑 vs Boss Mode (1v1)</button>
+                    <button id="mode-ffa" class="p-3 rounded-2xl border-2 border-white bg-white/60 font-fredoka text-purple-800 text-sm shadow-md" onclick="setGameMode('ffa')">⚡ 3-Way FFA</button>
                 </div>
             </div>
 
-            <!-- Network Duel Setup Section (Hidden by default) -->
-            <div id="network-panel" class="hidden text-left bg-purple-50 p-3 rounded-2xl border border-purple-200 space-y-2">
-                <div class="text-xs font-bold text-purple-800">🌐 WiFi / LAN Multiplayer (WebRTC PeerJS):</div>
-                <div class="flex gap-2">
-                    <button id="btn-host" class="flex-1 py-2 bg-pink-400 text-white font-fredoka text-xs rounded-xl shadow">Host Game</button>
-                    <button id="btn-join" class="flex-1 py-2 bg-cyan-400 text-white font-fredoka text-xs rounded-xl shadow">Join Game</button>
-                </div>
-                <div id="peer-status" class="text-xs text-purple-600 font-semibold text-center">Status: Offline</div>
-            </div>
-
-            <!-- Customizing Role Selector (Player vs Boss) -->
+            <!-- Customizing Role Selector -->
             <div class="text-left">
                 <label class="font-fredoka text-purple-700 text-sm">Customizing Character:</label>
-                <div class="grid grid-cols-2 gap-2 mt-1">
-                    <button id="role-player" class="py-2 rounded-xl border-2 font-fredoka text-xs bg-cyan-100 border-cyan-400 text-cyan-700 shadow" onclick="setCustomizingRole('player')">🐰 Player Skin</button>
-                    <button id="role-boss" class="py-2 rounded-xl border-2 font-fredoka text-xs bg-white/60 border-white text-pink-700 shadow" onclick="setCustomizingRole('boss')">👑 Boss Skin</button>
+                <div id="role-selector-container" class="grid grid-cols-3 gap-1.5 mt-1">
+                    <button id="role-player" class="py-2 rounded-xl border-2 font-fredoka text-xs bg-cyan-100 border-cyan-400 text-cyan-700 shadow" onclick="setCustomizingRole('player')">🐰 Player</button>
+                    <button id="role-com" class="py-2 rounded-xl border-2 font-fredoka text-xs bg-white/60 border-white text-lime-700 shadow" onclick="setCustomizingRole('com')">🦊 COM Bot</button>
+                    <button id="role-boss" class="py-2 rounded-xl border-2 font-fredoka text-xs bg-white/60 border-white text-pink-700 shadow" onclick="setCustomizingRole('boss')">👑 Boss</button>
                 </div>
             </div>
 
@@ -176,13 +177,13 @@
                 <div id="character-selector" class="grid grid-cols-4 sm:grid-cols-5 gap-2 max-h-36 overflow-y-auto p-2 bg-white/70 rounded-2xl border border-pink-200 mt-1"></div>
             </div>
 
-            <!-- Color Palette Selector (20 Colors) -->
+            <!-- Color Palette Selector -->
             <div class="text-left">
                 <label class="font-fredoka text-purple-700 text-sm">Glow Color (20 Shades):</label>
                 <div id="color-selector" class="grid grid-cols-5 sm:grid-cols-10 gap-1.5 max-h-24 overflow-y-auto p-2 bg-white/70 rounded-2xl border border-pink-200 mt-1"></div>
             </div>
 
-            <!-- Board Selector Grid (20 Boards) -->
+            <!-- Board Selector Grid -->
             <div class="text-left">
                 <label class="font-fredoka text-purple-700 text-sm">Board Layout (20 Boards):</label>
                 <div id="board-selector" class="grid grid-cols-2 sm:grid-cols-4 gap-2 max-h-24 overflow-y-auto p-2 bg-white/70 rounded-2xl border border-pink-200 mt-1"></div>
@@ -198,17 +199,20 @@
             <div id="result-emoji" class="text-7xl animate-pulse">🏆</div>
             <h2 id="result-title" class="font-fredoka text-3xl sm:text-4xl text-cyan-600">Blinky Wins!</h2>
             <div id="result-stars" class="text-4xl space-x-1">⭐⭐⭐</div>
-            <p id="result-subtitle" class="text-purple-800 font-bold text-base">You painted 68% of the board!</p>
+            <p id="result-subtitle" class="text-purple-800 font-bold text-base">You painted 52% of the board!</p>
 
-            <div class="bg-white/80 p-4 rounded-2xl flex justify-around items-center border border-purple-200 font-fredoka">
+            <div id="result-scores-box" class="bg-white/80 p-3 rounded-2xl flex justify-around items-center border border-purple-200 font-fredoka text-sm">
                 <div>
-                    <div id="final-player-label" class="text-xs text-cyan-400">Blinky</div>
-                    <div id="final-player-score" class="text-2xl text-cyan-500">68%</div>
+                    <div class="text-xs text-cyan-400">Player</div>
+                    <div id="final-p1" class="text-xl text-cyan-500">52%</div>
                 </div>
-                <div class="text-2xl text-slate-300">VS</div>
+                <div id="final-com-container">
+                    <div class="text-xs text-lime-500">COM Bot</div>
+                    <div id="final-p2" class="text-xl text-lime-500">25%</div>
+                </div>
                 <div>
-                    <div id="final-opponent-label" class="text-xs text-pink-400">Boss Dragon</div>
-                    <div id="final-ai-score" class="text-2xl text-pink-500">32%</div>
+                    <div class="text-xs text-pink-400">Boss</div>
+                    <div id="final-p3" class="text-xl text-pink-500">23%</div>
                 </div>
             </div>
 
@@ -218,8 +222,6 @@
         </div>
     </div>
 
-    <!-- Include PeerJS for WiFi / Network Multiplayer -->
-    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <script>
         class SoundFX {
             constructor() { this.ctx = null; this.muted = false; }
@@ -273,13 +275,9 @@
         let isGameRunning = false;
         let gameTimeLeft = 120;
         let timerInterval = null;
-        let gameMode = 'boss';
+        let gameMode = 'boss'; // 'boss' (1v1) or 'ffa' (3-way)
         let currentCategory = 'animal';
-        let customizingRole = 'player'; // 'player' or 'boss'
-
-        let peer = null;
-        let conn = null;
-        let isHost = false;
+        let customizingRole = 'player';
 
         const SKIN_CATEGORIES = {
             animal: [
@@ -366,6 +364,11 @@
             charType: SKIN_CATEGORIES.animal[0], colorSwatch: COLOR_SWATCHES[0]
         };
 
+        const customCom = {
+            charIndex: 3, category: 'animal', colorIndex: 2,
+            charType: SKIN_CATEGORIES.animal[3], colorSwatch: COLOR_SWATCHES[2]
+        };
+
         const customBoss = {
             charIndex: 19, category: 'animal', colorIndex: 1,
             charType: SKIN_CATEGORIES.animal[19], colorSwatch: COLOR_SWATCHES[1]
@@ -378,40 +381,70 @@
             trailColor: 'rgba(0, 229, 255, 0.85)', glowColor: '#00E5FF',
             name: 'Blinky', facing: 'right', powerup: null, powerupTimer: 0,
             isFrozen: false, isSlowed: false, isGhost: false,
-            charType: SKIN_CATEGORIES.animal[0], colorSwatch: COLOR_SWATCHES[0], isBoss: false
+            charType: SKIN_CATEGORIES.animal[0], colorSwatch: COLOR_SWATCHES[0]
         };
 
-        const opponent = {
-            x: GRID_COLS - 3, y: GRID_ROWS - 3, px: 0, py: 0, dx: 0, dy: 0, speed: 4.1,
+        const bot1 = {
+            x: GRID_COLS - 3, y: 2, px: 0, py: 0, dx: 0, dy: 0, speed: 4.1,
+            trailColor: 'rgba(118, 255, 3, 0.85)', glowColor: '#76FF03',
+            name: 'COM Bot', facing: 'left', powerup: null, powerupTimer: 0, changeDirTimer: 0,
+            isFrozen: false, isSlowed: false, isGhost: false,
+            charType: SKIN_CATEGORIES.animal[3], colorSwatch: COLOR_SWATCHES[2]
+        };
+
+        const bot2 = {
+            x: GRID_COLS - 3, y: GRID_ROWS - 3, px: 0, py: 0, dx: 0, dy: 0, speed: 4.3,
             trailColor: 'rgba(255, 64, 129, 0.85)', glowColor: '#FF4081',
             name: 'Boss Dragon', facing: 'left', powerup: null, powerupTimer: 0, changeDirTimer: 0,
             isFrozen: false, isSlowed: false, isGhost: false,
-            charType: SKIN_CATEGORIES.animal[19], colorSwatch: COLOR_SWATCHES[1], isBoss: true
+            charType: SKIN_CATEGORIES.animal[19], colorSwatch: COLOR_SWATCHES[1]
         };
 
         const keys = { up: false, down: false, left: false, right: false };
 
         function setGameMode(mode) {
             gameMode = mode;
-            document.getElementById('mode-boss').className = `p-3 rounded-2xl border-2 font-fredoka text-sm shadow-md ${mode === 'boss' ? 'border-purple-500 bg-purple-100 text-purple-700' : 'border-white bg-white/60 text-purple-800'}`;
-            document.getElementById('mode-network').className = `p-3 rounded-2xl border-2 font-fredoka text-sm shadow-md ${mode === 'network' ? 'border-purple-500 bg-purple-100 text-purple-700' : 'border-white bg-white/60 text-purple-800'}`;
-            
-            const netPanel = document.getElementById('network-panel');
-            if (mode === 'network') netPanel.classList.remove('hidden');
-            else netPanel.classList.add('hidden');
+            const comRoleBtn = document.getElementById('role-com');
+            const comHud = document.getElementById('hud-com-container');
+            const comProgress = document.getElementById('progress-p2');
+            const finalComBox = document.getElementById('final-com-container');
+
+            if (mode === 'boss') {
+                document.getElementById('mode-boss').className = "p-3 rounded-2xl border-2 border-purple-500 bg-purple-100 font-fredoka text-purple-700 text-sm shadow-md";
+                document.getElementById('mode-ffa').className = "p-3 rounded-2xl border-2 border-white bg-white/60 font-fredoka text-purple-800 text-sm shadow-md";
+                comRoleBtn.classList.add('hidden');
+                comHud.classList.add('hidden');
+                comProgress.classList.add('hidden');
+                finalComBox.classList.add('hidden');
+                if (customizingRole === 'com') setCustomizingRole('player');
+            } else {
+                document.getElementById('mode-ffa').className = "p-3 rounded-2xl border-2 border-purple-500 bg-purple-100 font-fredoka text-purple-700 text-sm shadow-md";
+                document.getElementById('mode-boss').className = "p-3 rounded-2xl border-2 border-white bg-white/60 font-fredoka text-purple-800 text-sm shadow-md";
+                comRoleBtn.classList.remove('hidden');
+                comHud.classList.remove('hidden');
+                comProgress.classList.remove('hidden');
+                finalComBox.classList.remove('hidden');
+            }
         }
 
         function setCustomizingRole(role) {
             customizingRole = role;
             const pBtn = document.getElementById('role-player');
+            const cBtn = document.getElementById('role-com');
             const bBtn = document.getElementById('role-boss');
+            
+            pBtn.className = "py-2 rounded-xl border-2 font-fredoka text-xs bg-white/60 border-white text-cyan-700 shadow";
+            cBtn.className = "py-2 rounded-xl border-2 font-fredoka text-xs bg-white/60 border-white text-lime-700 shadow";
+            bBtn.className = "py-2 rounded-xl border-2 font-fredoka text-xs bg-white/60 border-white text-pink-700 shadow";
+
             if (role === 'player') {
                 pBtn.className = "py-2 rounded-xl border-2 font-fredoka text-xs bg-cyan-100 border-cyan-400 text-cyan-700 shadow";
-                bBtn.className = "py-2 rounded-xl border-2 font-fredoka text-xs bg-white/60 border-white text-pink-700 shadow";
                 setCategory(customPlayer.category, false);
+            } else if (role === 'com') {
+                cBtn.className = "py-2 rounded-xl border-2 font-fredoka text-xs bg-lime-100 border-lime-400 text-lime-700 shadow";
+                setCategory(customCom.category, false);
             } else {
                 bBtn.className = "py-2 rounded-xl border-2 font-fredoka text-xs bg-pink-100 border-pink-400 text-pink-700 shadow";
-                pBtn.className = "py-2 rounded-xl border-2 font-fredoka text-xs bg-white/60 border-white text-cyan-700 shadow";
                 setCategory(customBoss.category, false);
             }
             populateMenus();
@@ -420,6 +453,7 @@
         function setCategory(cat, updateRoleState = true) {
             if (updateRoleState) {
                 if (customizingRole === 'player') customPlayer.category = cat;
+                else if (customizingRole === 'com') customCom.category = cat;
                 else customBoss.category = cat;
             }
             ['animal', 'holiday', 'transport', 'fruit'].forEach(c => {
@@ -430,21 +464,18 @@
                     btn.className = "py-1.5 px-2 rounded-xl border-2 font-fredoka text-xs bg-white/60 border-white text-purple-700";
                 }
             });
-            if (updateRoleState) {
-                if (customizingRole === 'player') customPlayer.charIndex = 0;
-                else customBoss.charIndex = 0;
-            }
             populateMenus();
         }
 
         function populateMenus() {
-            const activeCustom = customizingRole === 'player' ? customPlayer : customBoss;
+            const activeCustom = customizingRole === 'player' ? customPlayer : customizingRole === 'com' ? customCom : customBoss;
             const charContainer = document.getElementById('character-selector');
             charContainer.innerHTML = '';
             
             SKIN_CATEGORIES[activeCustom.category].forEach((char, idx) => {
                 const btn = document.createElement('button');
-                btn.className = `p-2 rounded-2xl flex flex-col items-center justify-center border-2 transition-all ${idx === activeCustom.charIndex ? (customizingRole === 'player' ? 'border-cyan-500 bg-cyan-100 shadow-md scale-105' : 'border-pink-500 bg-pink-100 shadow-md scale-105') : 'border-white bg-white/60 hover:bg-white'}`;
+                const borderActive = customizingRole === 'player' ? 'border-cyan-500 bg-cyan-100' : customizingRole === 'com' ? 'border-lime-500 bg-lime-100' : 'border-pink-500 bg-pink-100';
+                btn.className = `p-2 rounded-2xl flex flex-col items-center justify-center border-2 transition-all ${idx === activeCustom.charIndex ? `${borderActive} shadow-md scale-105` : 'border-white bg-white/60 hover:bg-white'}`;
                 btn.innerHTML = `<span class="text-2xl">${char.icon}</span><span class="text-[10px] font-bold text-purple-900 mt-0.5 truncate w-full text-center">${char.name}</span>`;
                 btn.onclick = () => {
                     activeCustom.charIndex = idx;
@@ -499,7 +530,8 @@
             cellHeight = h / GRID_ROWS;
             
             player.px = player.x * cellWidth + cellWidth / 2; player.py = player.y * cellHeight + cellHeight / 2;
-            opponent.px = opponent.x * cellWidth + cellWidth / 2; opponent.py = opponent.y * cellHeight + cellHeight / 2;
+            bot1.px = bot1.x * cellWidth + cellWidth / 2; bot1.py = bot1.y * cellHeight + cellHeight / 2;
+            bot2.px = bot2.x * cellWidth + cellWidth / 2; bot2.py = bot2.y * cellHeight + cellHeight / 2;
         }
 
         function generateBoardLayout(boardId) {
@@ -526,17 +558,23 @@
             generateBoardLayout(selectedBoardIndex);
             
             player.x = 2; player.y = 2;
-            opponent.x = GRID_COLS - 3; opponent.y = GRID_ROWS - 3;
+            bot1.x = GRID_COLS - 3; bot1.y = 2;
+            bot2.x = GRID_COLS - 3; bot2.y = GRID_ROWS - 3;
 
             paintArea(Math.floor(player.x), Math.floor(player.y), 1, 1);
-            paintArea(Math.floor(opponent.x), Math.floor(opponent.y), 2, 1);
+            if (gameMode === 'ffa') {
+                paintArea(Math.floor(bot1.x), Math.floor(bot1.y), 2, 1);
+                paintArea(Math.floor(bot2.x), Math.floor(bot2.y), 3, 1);
+            } else {
+                paintArea(Math.floor(bot2.x), Math.floor(bot2.y), 2, 1);
+            }
         }
 
         const POWERUP_TYPES = [
             { type: 'burst', icon: '⚡', name: 'Rainbow Burst!', color: '#fbbf24' },
             { type: 'speed', icon: '💨', name: 'Speedy Hooves!', color: '#38bdf8' },
             { type: 'shield', icon: '🛡️', name: 'Glitter Shield!', color: '#c084fc' },
-            { type: 'freeze', icon: '❄️', name: 'Frost Wave (Freeze 6s)!', color: '#93c5fd' },
+            { type: 'freeze', icon: '❄️', name: 'Frost Wave (Freeze 3s)!', color: '#93c5fd' },
             { type: 'splatter', icon: '💥', name: 'Paint Splatter (5x5)!', color: '#fb923c' },
             { type: 'ghost', icon: '👻', name: 'Ghost Phase-Through (4s)!', color: '#e879f9' },
             { type: 'swap', icon: '🔀', name: 'Color Swap (Reverser)!', color: '#4ade80' },
@@ -546,7 +584,7 @@
         ];
 
         function spawnPowerup() {
-            if (!isGameRunning || powerups.length >= 7) return;
+            if (!isGameRunning || powerups.length >= 10) return;
             const rx = Math.floor(Math.random() * (GRID_COLS - 2)) + 1;
             const ry = Math.floor(Math.random() * (GRID_ROWS - 2)) + 1;
             if (wallGrid[ry][rx] === 1) return;
@@ -554,7 +592,8 @@
             const pType = POWERUP_TYPES[Math.floor(Math.random() * POWERUP_TYPES.length)];
             powerups.push({
                 x: rx, y: ry, px: rx * cellWidth + cellWidth / 2, py: ry * cellHeight + cellHeight / 2,
-                type: pType.type, icon: pType.icon, name: pType.name, color: pType.color, bounce: 0
+                type: pType.type, icon: pType.icon, name: pType.name, color: pType.color, bounce: 0,
+                lifeTimer: 300 // 5 seconds at 60 FPS
             });
         }
 
@@ -562,8 +601,7 @@
             sfx.powerup();
             createBurstParticles(pu.px, pu.py, pu.color, 25);
 
-            const ownerId = entity === player ? 1 : 2;
-            const target = entity === player ? opponent : player;
+            const ownerId = entity === player ? 1 : (gameMode === 'ffa' && entity === bot1 ? 2 : (gameMode === 'ffa' ? 3 : 2));
 
             if (pu.type === 'burst') {
                 paintArea(Math.round(entity.x), Math.round(entity.y), ownerId, 2);
@@ -573,18 +611,20 @@
                 entity.isGhost = true;
                 setTimeout(() => entity.isGhost = false, 4000);
             } else if (pu.type === 'swap') {
-                // Flip random opponent tiles to user's color
-                const opponentId = ownerId === 1 ? 2 : 1;
                 for (let r = 0; r < GRID_ROWS; r++) {
                     for (let c = 0; c < GRID_COLS; c++) {
-                        if (grid[r][c] === opponentId && Math.random() < 0.35) {
+                        if (grid[r][c] !== 0 && grid[r][c] !== ownerId && Math.random() < 0.25) {
                             grid[r][c] = ownerId;
                         }
                     }
                 }
             } else if (pu.type === 'freeze') {
-                if (target.powerup === 'shield') target.powerup = null;
-                else { target.isFrozen = true; setTimeout(() => target.isFrozen = false, 6000); }
+                [player, bot1, bot2].forEach(target => {
+                    if (target !== entity && (gameMode === 'ffa' || target !== bot1)) {
+                        if (target.powerup !== 'shield') target.isFrozen = true;
+                        setTimeout(() => target.isFrozen = false, 3000);
+                    }
+                });
             } else if (pu.type === 'teleport') {
                 entity.x = Math.floor(Math.random() * (GRID_COLS - 4)) + 2;
                 entity.y = Math.floor(Math.random() * (GRID_ROWS - 4)) + 2;
@@ -632,26 +672,26 @@
             }
         }
 
-        function updateBossAI() {
-            if (opponent.isFrozen) return;
-            opponent.changeDirTimer--;
+        function updateAI(bot, ownerId) {
+            if (bot.isFrozen) return;
+            bot.changeDirTimer--;
 
-            const currentGridX = Math.round(opponent.x);
-            const currentGridY = Math.round(opponent.y);
+            const currentGridX = Math.round(bot.x);
+            const currentGridY = Math.round(bot.y);
 
-            const nextX = currentGridX + opponent.dx;
-            const nextY = currentGridY + opponent.dy;
-            const isBlocked = nextX < 0 || nextX >= GRID_COLS || nextY < 0 || nextY >= GRID_ROWS || (wallGrid[nextY][nextX] === 1 && !opponent.isGhost);
+            const nextX = currentGridX + bot.dx;
+            const nextY = currentGridY + bot.dy;
+            const isBlocked = nextX < 0 || nextX >= GRID_COLS || nextY < 0 || nextY >= GRID_ROWS || (wallGrid[nextY][nextX] === 1 && !bot.isGhost);
 
-            if (opponent.changeDirTimer <= 0 || isBlocked || (opponent.dx === 0 && opponent.dy === 0)) {
-                opponent.changeDirTimer = Math.floor(Math.random() * 12) + 8;
-                let targetX = opponent.x, targetY = opponent.y;
+            if (bot.changeDirTimer <= 0 || isBlocked || (bot.dx === 0 && bot.dy === 0)) {
+                bot.changeDirTimer = Math.floor(Math.random() * 12) + 8;
+                let targetX = bot.x, targetY = bot.y;
 
                 if (powerups.length > 0) {
                     let nearestPu = powerups[0];
                     let minDist = 999;
                     powerups.forEach(p => {
-                        const dist = Math.hypot(p.x - opponent.x, p.y - opponent.y);
+                        const dist = Math.hypot(p.x - bot.x, p.y - bot.y);
                         if (dist < minDist) { minDist = dist; nearestPu = p; }
                     });
                     targetX = nearestPu.x; targetY = nearestPu.y;
@@ -660,8 +700,8 @@
                     let foundTarget = false;
                     for (let r = 2; r < GRID_ROWS - 2; r += 2) {
                         for (let c = 2; c < GRID_COLS - 2; c += 2) {
-                            if (grid[r][c] !== 2 && wallGrid[r][c] !== 1) {
-                                const dist = Math.hypot(c - opponent.x, r - opponent.y);
+                            if (grid[r][c] !== ownerId && wallGrid[r][c] !== 1) {
+                                const dist = Math.hypot(c - bot.x, r - bot.y);
                                 if (dist < bestDist && dist > 2) {
                                     bestDist = dist; targetX = c; targetY = r; foundTarget = true;
                                 }
@@ -674,15 +714,15 @@
                     }
                 }
 
-                const dx = targetX - opponent.x;
-                const dy = targetY - opponent.y;
+                const dx = targetX - bot.x;
+                const dy = targetY - bot.y;
                 if (Math.abs(dx) > Math.abs(dy)) {
-                    opponent.dx = dx > 0 ? 1 : -1; opponent.dy = 0; opponent.facing = dx > 0 ? 'right' : 'left';
+                    bot.dx = dx > 0 ? 1 : -1; bot.dy = 0; bot.facing = dx > 0 ? 'right' : 'left';
                 } else {
-                    opponent.dx = 0; opponent.dy = dy > 0 ? 1 : -1;
+                    bot.dx = 0; bot.dy = dy > 0 ? 1 : -1;
                 }
             }
-            moveEntity(opponent, 2);
+            moveEntity(bot, ownerId);
         }
 
         function moveEntity(entity, ownerId) {
@@ -740,9 +780,6 @@
 
             if (player.dx !== 0 || player.dy !== 0) {
                 moveEntity(player, 1);
-                if (conn && conn.open) {
-                    conn.send({ type: 'move', x: player.x, y: player.y, dx: player.dx, dy: player.dy, grid: grid });
-                }
             }
         }
 
@@ -768,7 +805,8 @@
                         ctx.stroke();
                     } else {
                         if (cellState === 1) ctx.fillStyle = player.trailColor;
-                        else if (cellState === 2) ctx.fillStyle = opponent.trailColor;
+                        else if (cellState === 2) ctx.fillStyle = gameMode === 'ffa' ? bot1.trailColor : bot2.trailColor;
+                        else if (cellState === 3) ctx.fillStyle = bot2.trailColor;
                         else ctx.fillStyle = (r + c) % 2 === 0 ? '#ffffff' : '#f8fafc';
 
                         ctx.beginPath(); ctx.roundRect(x + 1, y + 1, cellWidth - 2, cellHeight - 2, 4);
@@ -780,7 +818,14 @@
         }
 
         function drawPowerups() {
-            powerups.forEach(pu => {
+            for (let i = powerups.length - 1; i >= 0; i--) {
+                const pu = powerups[i];
+                pu.lifeTimer--;
+                if (pu.lifeTimer <= 0) {
+                    powerups.splice(i, 1);
+                    continue;
+                }
+
                 pu.bounce += 0.08; const offsetY = Math.sin(pu.bounce) * 4;
                 ctx.save(); ctx.shadowColor = pu.color; ctx.shadowBlur = 10;
                 ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
@@ -797,13 +842,13 @@
                 ctx.fillText(pu.name, pu.px, pu.py + offsetY + cellHeight * 0.85);
                 
                 ctx.restore();
-            });
+            }
         }
 
         function drawCharacter(entity) {
             ctx.save(); ctx.translate(entity.px, entity.py);
             const swatch = entity.colorSwatch;
-            const size = Math.min(cellWidth, cellHeight) * 1.8;
+            const size = Math.min(cellWidth, cellHeight) * 2.1;
 
             ctx.globalAlpha = entity.isGhost ? 0.5 : 1.0;
             ctx.shadowColor = entity.isFrozen ? '#38bdf8' : swatch.hex; 
@@ -837,43 +882,60 @@
         }
 
         function updateScores() {
-            let playerPainted = 0, opponentPainted = 0, totalOpenCells = 0;
+            let p1Count = 0, p2Count = 0, p3Count = 0, totalOpenCells = 0;
             for (let r = 0; r < GRID_ROWS; r++) {
                 for (let c = 0; c < GRID_COLS; c++) {
                     if (wallGrid[r][c] !== 1) {
                         totalOpenCells++;
-                        if (grid[r][c] === 1) playerPainted++;
-                        if (grid[r][c] === 2) opponentPainted++;
+                        if (grid[r][c] === 1) p1Count++;
+                        if (grid[r][c] === 2) {
+                            if (gameMode === 'ffa') p2Count++;
+                            else p3Count++;
+                        }
+                        if (grid[r][c] === 3 && gameMode === 'ffa') p3Count++;
                     }
                 }
             }
 
-            if (player.powerup === 'multiplier') playerPainted = Math.min(totalOpenCells, Math.round(playerPainted * 1.35));
+            if (player.powerup === 'multiplier') p1Count = Math.min(totalOpenCells, Math.round(p1Count * 1.35));
 
-            const playerPct = Math.round((playerPainted / totalOpenCells) * 100) || 0;
-            const opponentPct = Math.round((opponentPainted / totalOpenCells) * 100) || 0;
+            const p1Pct = Math.round((p1Count / totalOpenCells) * 100) || 0;
+            const p2Pct = Math.round((p2Count / totalOpenCells) * 100) || 0;
+            const p3Pct = Math.round((p3Count / totalOpenCells) * 100) || 0;
 
-            document.getElementById('player-score').textContent = `${playerPct}%`;
-            document.getElementById('ai-score').textContent = `${opponentPct}%`;
-            document.getElementById('progress-player').style.width = `${playerPct}%`;
-            document.getElementById('progress-ai').style.width = `${opponentPct}%`;
+            document.getElementById('score-p1').textContent = `${p1Pct}%`;
+            document.getElementById('score-p3').textContent = `${gameMode === 'ffa' ? p3Pct : p2Pct}%`;
+            document.getElementById('progress-p1').style.width = `${p1Pct}%`;
+            document.getElementById('progress-p3').style.width = `${gameMode === 'ffa' ? p3Pct : p2Pct}%`;
 
-            return { playerPct, opponentPct };
+            if (gameMode === 'ffa') {
+                document.getElementById('score-p2').textContent = `${p2Pct}%`;
+                document.getElementById('progress-p2').style.width = `${p2Pct}%`;
+                return { p1Pct, p2Pct, p3Pct };
+            } else {
+                return { p1Pct, p2Pct: 0, p3Pct: p2Pct };
+            }
         }
 
         function gameLoop() {
             if (isGameRunning) {
                 updatePlayer();
-                if (gameMode === 'boss') updateBossAI();
+                if (gameMode === 'ffa') {
+                    updateAI(bot1, 2);
+                    updateAI(bot2, 3);
+                } else {
+                    updateAI(bot2, 2);
+                }
                 updateParticles();
                 updateScores();
-                if (Math.random() < 0.008) spawnPowerup();
+                if (Math.random() < 0.01) spawnPowerup();
             }
 
             drawGrid();
             drawPowerups();
             drawCharacter(player);
-            drawCharacter(opponent);
+            if (gameMode === 'ffa') drawCharacter(bot1);
+            drawCharacter(bot2);
             drawParticles();
 
             requestAnimationFrame(gameLoop);
@@ -887,10 +949,16 @@
             player.trailColor = customPlayer.colorSwatch.hex + 'CC';
             player.glowColor = customPlayer.colorSwatch.hex;
 
-            opponent.charType = customBoss.charType;
-            opponent.colorSwatch = customBoss.colorSwatch;
-            opponent.trailColor = customBoss.colorSwatch.hex + 'CC';
-            opponent.glowColor = customBoss.colorSwatch.hex;
+            bot1.charType = customCom.charType;
+            bot1.colorSwatch = customCom.colorSwatch;
+            bot1.trailColor = customCom.colorSwatch.hex + 'CC';
+            bot1.glowColor = customCom.colorSwatch.hex;
+            bot1.name = customCom.charType.name;
+
+            bot2.charType = customBoss.charType;
+            bot2.colorSwatch = customBoss.colorSwatch;
+            bot2.trailColor = customBoss.colorSwatch.hex + 'CC';
+            bot2.glowColor = customBoss.colorSwatch.hex;
 
             initGrid();
             gameTimeLeft = 120;
@@ -899,16 +967,16 @@
             particles = [];
 
             player.isFrozen = false; player.isSlowed = false; player.isGhost = false;
-            opponent.isFrozen = false; opponent.isSlowed = false; opponent.isGhost = false;
+            bot1.isFrozen = false; bot1.isSlowed = false; bot1.isGhost = false;
+            bot2.isFrozen = false; bot2.isSlowed = false; bot2.isGhost = false;
 
             if (gameMode === 'boss') {
-                opponent.name = `👑 ${opponent.charType.name}`;
-                opponent.speed = 4.5;
-                opponent.isBoss = true;
+                bot2.name = `👑 ${bot2.charType.name}`;
+                bot2.speed = 4.5;
+                bot2.trailColor = bot2.colorSwatch.hex + 'CC';
             } else {
-                opponent.name = 'Friend (WiFi)';
-                opponent.speed = 4.2;
-                opponent.isBoss = false;
+                bot2.name = `👑 ${bot2.charType.name}`;
+                bot2.speed = 4.3;
             }
 
             resizeCanvas();
@@ -918,13 +986,17 @@
             document.getElementById('result-card').classList.add('hidden');
             document.getElementById('game-timer').textContent = gameTimeLeft;
 
-            document.getElementById('hud-player-avatar').style.background = player.colorSwatch.hex;
-            document.getElementById('hud-player-avatar').textContent = player.charType.icon;
-            document.getElementById('hud-player-name').textContent = player.charType.name;
+            document.getElementById('hud-p1-avatar').style.background = player.colorSwatch.hex;
+            document.getElementById('hud-p1-avatar').textContent = player.charType.icon;
+            document.getElementById('hud-p1-name').textContent = player.charType.name;
 
-            document.getElementById('hud-opponent-avatar').style.background = opponent.colorSwatch.hex;
-            document.getElementById('hud-opponent-avatar').textContent = opponent.charType.icon;
-            document.getElementById('hud-opponent-name').textContent = opponent.name;
+            document.getElementById('hud-p2-avatar').style.background = bot1.colorSwatch.hex;
+            document.getElementById('hud-p2-avatar').textContent = bot1.charType.icon;
+            document.getElementById('hud-p2-name').textContent = bot1.charType.name;
+
+            document.getElementById('hud-p3-avatar').style.background = bot2.colorSwatch.hex;
+            document.getElementById('hud-p3-avatar').textContent = bot2.charType.icon;
+            document.getElementById('hud-p3-name').textContent = bot2.name;
 
             clearInterval(timerInterval);
             timerInterval = setInterval(() => {
@@ -940,24 +1012,33 @@
             clearInterval(timerInterval);
 
             const scores = updateScores();
-            const playerWon = scores.playerPct >= scores.opponentPct;
+            let winner = 'Player';
+            let maxPct = scores.p1Pct;
 
-            if (playerWon) {
+            if (gameMode === 'ffa') {
+                if (scores.p2Pct > maxPct) { maxPct = scores.p2Pct; winner = bot1.name; }
+                if (scores.p3Pct > maxPct) { maxPct = scores.p3Pct; winner = bot2.name; }
+            } else {
+                if (scores.p3Pct > maxPct) { maxPct = scores.p3Pct; winner = bot2.name; }
+            }
+
+            if (winner === player.charType.name) {
                 sfx.winJingle();
                 document.getElementById('result-emoji').textContent = '🏆';
                 document.getElementById('result-title').textContent = `${player.charType.name} Wins!`;
                 document.getElementById('result-stars').textContent = '⭐⭐⭐';
-                document.getElementById('result-subtitle').textContent = `You painted ${scores.playerPct}% of the board!`;
+                document.getElementById('result-subtitle').textContent = `You painted ${scores.p1Pct}% of the board!`;
                 createBurstParticles(canvas.width / 2, canvas.height / 2, player.colorSwatch.hex, 50);
             } else {
                 document.getElementById('result-emoji').textContent = '👑';
-                document.getElementById('result-title').textContent = `${opponent.name} Wins!`;
+                document.getElementById('result-title').textContent = `${winner} Wins!`;
                 document.getElementById('result-stars').textContent = '⭐';
-                document.getElementById('result-subtitle').textContent = `${opponent.name} painted ${scores.opponentPct}%! Try again!`;
+                document.getElementById('result-subtitle').textContent = `${winner} dominated with ${maxPct}%! Try again!`;
             }
 
-            document.getElementById('final-player-score').textContent = `${scores.playerPct}%`;
-            document.getElementById('final-ai-score').textContent = `${scores.opponentPct}%`;
+            document.getElementById('final-p1').textContent = `${scores.p1Pct}%`;
+            document.getElementById('final-p2').textContent = `${scores.p2Pct}%`;
+            document.getElementById('final-p3').textContent = `${scores.p3Pct}%`;
 
             document.getElementById('modal-overlay').classList.remove('hidden');
             document.getElementById('result-card').classList.remove('hidden');
@@ -970,45 +1051,6 @@
             document.getElementById('result-card').classList.add('hidden');
             document.getElementById('start-card').classList.remove('hidden');
             document.getElementById('modal-overlay').classList.remove('hidden');
-        }
-
-        function initPeerJS() {
-            peer = new Peer();
-            peer.on('open', (id) => {
-                document.getElementById('peer-status').textContent = `Your Peer ID: ${id} (Share with friend!)`;
-            });
-            peer.on('connection', (c) => {
-                conn = c; isHost = true;
-                setupConnection();
-            });
-        }
-
-        document.getElementById('btn-host').addEventListener('click', () => { initPeerJS(); });
-
-        document.getElementById('btn-join').addEventListener('click', () => {
-            const remoteId = prompt("Enter Host Peer ID:");
-            if (!remoteId) return;
-            peer = new Peer();
-            peer.on('open', () => {
-                conn = peer.connect(remoteId);
-                isHost = false;
-                setupConnection();
-            });
-        });
-
-        function setupConnection() {
-            conn.on('open', () => {
-                document.getElementById('peer-status').textContent = "Connected over WiFi! Ready!";
-                setTimeout(startGame, 1000);
-            });
-            conn.on('data', (data) => {
-                if (data.type === 'move') {
-                    opponent.x = data.x; opponent.y = data.y;
-                    opponent.px = data.x * cellWidth + cellWidth / 2;
-                    opponent.py = data.y * cellHeight + cellHeight / 2;
-                    grid = data.grid;
-                }
-            });
         }
 
         function bindInputs() {
@@ -1052,10 +1094,13 @@
         }
 
         window.onload = function() {
+            setGameMode('boss');
             populateMenus();
             resizeCanvas();
             initGrid();
             bindInputs();
             gameLoop();
-  
+        };
+    </script>
+</body>
 </html>
