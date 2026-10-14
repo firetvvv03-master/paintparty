@@ -10,7 +10,7 @@
         body {
             font-family: 'Quicksand', sans-serif;
             background: linear-gradient(135deg, #ffd1dc 0%, #e0c3fc 50%, #8ec5fc 100%);
-            touch-action: manipulation;
+            touch-action: none; /* Prevents default browser scrolling/pinching on canvas */
             user-select: none;
             -webkit-user-select: none;
             overflow: hidden;
@@ -23,32 +23,32 @@
         }
 
         .glass-panel {
-            background: rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            border: 3px solid rgba(255, 255, 255, 0.9);
-            box-shadow: 0 10px 30px rgba(180, 140, 210, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.9);
+            box-shadow: 0 8px 24px rgba(180, 140, 210, 0.25);
         }
 
         .btn-cute {
             transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.15s ease;
-            box-shadow: 0 6px 0 rgba(0,0,0,0.15);
+            box-shadow: 0 4px 0 rgba(0,0,0,0.15);
         }
 
         .btn-cute:active {
-            transform: translateY(4px);
-            box-shadow: 0 2px 0 rgba(0,0,0,0.15);
+            transform: translateY(3px);
+            box-shadow: 0 1px 0 rgba(0,0,0,0.15);
         }
 
         .dpad-btn {
             background: rgba(255, 255, 255, 0.85);
-            border: 3px solid #f3a8f1;
-            box-shadow: 0 4px 12px rgba(230, 130, 200, 0.3);
+            border: 2px solid #f3a8f1;
+            box-shadow: 0 3px 10px rgba(230, 130, 200, 0.3);
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 18px;
-            font-size: 24px;
+            border-radius: 14px;
+            font-size: 20px;
             user-select: none;
         }
 
@@ -67,7 +67,7 @@
 
         .cloud-bg {
             position: absolute;
-            opacity: 0.25;
+            opacity: 0.2;
             pointer-events: none;
             animation: floatCloud linear infinite;
         }
@@ -78,7 +78,7 @@
         }
 
         ::-webkit-scrollbar {
-            width: 8px;
+            width: 6px;
         }
         ::-webkit-scrollbar-track {
             background: rgba(255,255,255,0.5);
@@ -90,131 +90,132 @@
         }
     </style>
 </head>
-<body class="h-screen w-screen flex flex-col justify-between items-center p-2 select-none">
+<body class="h-screen w-screen flex flex-col items-center justify-between overflow-hidden p-1.5 select-none">
 
-    <div class="cloud-bg text-6xl top-10" style="animation-duration: 35s;">☁️</div>
-    <div class="cloud-bg text-8xl top-1/3" style="animation-duration: 50s; animation-delay: -15s;">☁️</div>
-    <div class="cloud-bg text-7xl bottom-20" style="animation-duration: 40s; animation-delay: -5s;">☁️</div>
+    <div class="cloud-bg text-5xl top-6" style="animation-duration: 35s;">☁️</div>
+    <div class="cloud-bg text-7xl top-1/3" style="animation-duration: 50s; animation-delay: -15s;">☁️</div>
 
-    <header class="w-full max-w-6xl glass-panel rounded-3xl p-3 flex flex-col gap-2 z-10">
+    <!-- Compact Header -->
+    <header class="w-full max-w-5xl glass-panel rounded-2xl p-2 flex flex-col gap-1.5 z-10 shrink-0">
         <div class="flex justify-between items-center">
             <!-- Player 1 Stats -->
-            <div class="flex items-center gap-2 sm:gap-3">
-                <div id="hud-p1-avatar" class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-cyan-300 border-2 border-white flex items-center justify-center text-2xl shadow-inner">🐰</div>
+            <div class="flex items-center gap-2">
+                <div id="hud-p1-avatar" class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-cyan-300 border-2 border-white flex items-center justify-center text-xl shadow-inner">🐰</div>
                 <div>
-                    <div id="hud-p1-name" class="font-fredoka text-cyan-600 text-sm sm:text-base leading-none">Blinky</div>
-                    <div id="hud-p1-status" class="text-[10px] font-bold text-purple-600 h-3 leading-none mt-1">Ready</div>
-                    <div id="p1-score" class="font-fredoka text-lg sm:text-2xl text-cyan-500">33%</div>
+                    <div id="hud-p1-name" class="font-fredoka text-cyan-600 text-xs sm:text-sm leading-none">Blinky</div>
+                    <div id="hud-p1-status" class="text-[9px] font-bold text-purple-600 h-2.5 leading-none mt-0.5">Ready</div>
+                    <div id="p1-score" class="font-fredoka text-base sm:text-xl text-cyan-500 leading-tight">33%</div>
                 </div>
             </div>
 
             <!-- Timer Badge -->
-            <div class="glass-panel px-4 py-1 sm:py-2 rounded-2xl border-2 border-amber-300 bg-amber-50/80 text-center">
-                <div class="text-xs font-bold text-amber-600 uppercase tracking-wider">Time</div>
-                <div id="game-timer" class="font-fredoka text-2xl sm:text-3xl text-amber-500 leading-none">120</div>
+            <div class="glass-panel px-3 py-1 rounded-xl border-2 border-amber-300 bg-amber-50/80 text-center">
+                <div class="text-[10px] font-bold text-amber-600 uppercase tracking-wider leading-none">Time</div>
+                <div id="game-timer" class="font-fredoka text-xl sm:text-2xl text-amber-500 leading-none mt-0.5">120</div>
             </div>
 
             <!-- Opponent & Boss Header Stats Group -->
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-2">
                 <!-- Player 2 / COM Stats -->
-                <div id="p2-header-group" class="flex items-center gap-2 sm:gap-3 flex-row-reverse text-right">
-                    <div id="hud-p2-avatar" class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-pink-300 border-2 border-white flex items-center justify-center text-2xl shadow-inner">🐱</div>
+                <div id="p2-header-group" class="flex items-center gap-2 flex-row-reverse text-right">
+                    <div id="hud-p2-avatar" class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-pink-300 border-2 border-white flex items-center justify-center text-xl shadow-inner">🐱</div>
                     <div>
-                        <div id="hud-p2-name" class="font-fredoka text-pink-600 text-sm sm:text-base leading-none">Glimmer</div>
-                        <div id="hud-p2-status" class="text-[10px] font-bold text-purple-600 h-3 leading-none mt-1">Ready</div>
-                        <div id="p2-score" class="font-fredoka text-lg sm:text-2xl text-pink-500">33%</div>
+                        <div id="hud-p2-name" class="font-fredoka text-pink-600 text-xs sm:text-sm leading-none">Glimmer</div>
+                        <div id="hud-p2-status" class="text-[9px] font-bold text-purple-600 h-2.5 leading-none mt-0.5">Ready</div>
+                        <div id="p2-score" class="font-fredoka text-base sm:text-xl text-pink-500 leading-tight">33%</div>
                     </div>
                 </div>
 
                 <!-- Boss Stats (Hidden unless 3-way mode) -->
-                <div id="boss-header-group" class="hidden items-center gap-2 sm:gap-3 flex-row-reverse text-right border-l pl-3 border-purple-200">
-                    <div id="hud-boss-avatar" class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-amber-300 border-2 border-white flex items-center justify-center text-2xl shadow-inner">🐉</div>
+                <div id="boss-header-group" class="hidden items-center gap-2 flex-row-reverse text-right border-l pl-2 border-purple-200">
+                    <div id="hud-boss-avatar" class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-amber-300 border-2 border-white flex items-center justify-center text-xl shadow-inner">🐉</div>
                     <div>
-                        <div id="hud-boss-name" class="font-fredoka text-amber-600 text-sm sm:text-base leading-none">Megaburn</div>
-                        <div id="hud-boss-status" class="text-[10px] font-bold text-purple-600 h-3 leading-none mt-1">Ready</div>
-                        <div id="boss-score" class="font-fredoka text-lg sm:text-2xl text-amber-500">34%</div>
+                        <div id="hud-boss-name" class="font-fredoka text-amber-600 text-xs sm:text-sm leading-none">Megaburn</div>
+                        <div id="hud-boss-status" class="text-[9px] font-bold text-purple-600 h-2.5 leading-none mt-0.5">Ready</div>
+                        <div id="boss-score" class="font-fredoka text-base sm:text-xl text-amber-500 leading-tight">34%</div>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Live Paint Progress Bar -->
-        <div class="w-full bg-slate-200/80 rounded-full h-4 sm:h-5 p-1 flex items-center shadow-inner overflow-hidden border border-white">
+        <div class="w-full bg-slate-200/80 rounded-full h-3 p-0.5 flex items-center shadow-inner overflow-hidden border border-white">
             <div id="progress-p1" class="bg-gradient-to-r from-cyan-400 to-sky-400 h-full rounded-full transition-all duration-300" style="width: 33%;"></div>
             <div id="progress-p2" class="bg-gradient-to-r from-pink-400 to-rose-400 h-full rounded-full transition-all duration-300" style="width: 33%;"></div>
             <div id="progress-boss" class="bg-gradient-to-r from-amber-400 to-yellow-400 h-full rounded-full transition-all duration-300 hidden" style="width: 34%;"></div>
         </div>
     </header>
 
-    <!-- Edge-to-Edge Maximized Canvas Section -->
-    <main class="relative flex-1 w-full flex items-center justify-center overflow-hidden my-1">
+    <!-- Edge-to-Edge Maximized Canvas Section (Takes all available dead space) -->
+    <main class="relative flex-1 w-full flex items-center justify-center overflow-hidden my-0.5">
         <div class="relative w-full h-full flex items-center justify-center">
-            <canvas id="gameCanvas" class="cursor-pointer w-full h-full object-contain"></canvas>
+            <canvas id="gameCanvas" class="cursor-pointer max-w-full max-h-full object-contain touch-none"></canvas>
 
-            <div id="powerup-badge" class="absolute top-2 bg-white/90 border-2 border-purple-400 rounded-full px-4 py-1 font-fredoka text-purple-600 shadow-lg text-sm sm:text-base hidden pulse-active">
+            <div id="powerup-badge" class="absolute top-1 bg-white/90 border-2 border-purple-400 rounded-full px-3 py-0.5 font-fredoka text-purple-600 shadow-lg text-xs sm:text-sm hidden pulse-active">
                 ✨ Speed Boost!
             </div>
         </div>
     </main>
 
     <!-- Emoji Chat Reactions Bar -->
-    <div class="flex items-center justify-center gap-2 z-10 bg-white/60 backdrop-blur-md px-3 py-1.5 rounded-2xl border border-white shadow-md my-1">
-        <span class="text-xs font-bold text-purple-700 font-fredoka hidden sm:inline">Chat:</span>
-        <button onclick="sendChatEmoji('❤️')" class="btn-cute text-xl sm:text-2xl hover:scale-125 px-1.5">❤️</button>
-        <button onclick="sendChatEmoji('😂')" class="btn-cute text-xl sm:text-2xl hover:scale-125 px-1.5">😂</button>
-        <button onclick="sendChatEmoji('🔥')" class="btn-cute text-xl sm:text-2xl hover:scale-125 px-1.5">🔥</button>
-        <button onclick="sendChatEmoji('✨')" class="btn-cute text-xl sm:text-2xl hover:scale-125 px-1.5">✨</button>
-        <button onclick="sendChatEmoji('😎')" class="btn-cute text-xl sm:text-2xl hover:scale-125 px-1.5">😎</button>
-        <button onclick="sendChatEmoji('🚀')" class="btn-cute text-xl sm:text-2xl hover:scale-125 px-1.5">🚀</button>
-        <button onclick="sendChatEmoji('🦄')" class="btn-cute text-xl sm:text-2xl hover:scale-125 px-1.5">🦄</button>
+    <div class="flex items-center justify-center gap-1.5 z-10 bg-white/60 backdrop-blur-md px-2.5 py-1 rounded-xl border border-white shadow-sm shrink-0">
+        <span class="text-[11px] font-bold text-purple-700 font-fredoka hidden sm:inline">Chat:</span>
+        <button onclick="sendChatEmoji('❤️')" class="btn-cute text-lg sm:text-xl hover:scale-125 px-1">❤️</button>
+        <button onclick="sendChatEmoji('😂')" class="btn-cute text-lg sm:text-xl hover:scale-125 px-1">😂</button>
+        <button onclick="sendChatEmoji('🔥')" class="btn-cute text-lg sm:text-xl hover:scale-125 px-1">🔥</button>
+        <button onclick="sendChatEmoji('✨')" class="btn-cute text-lg sm:text-xl hover:scale-125 px-1">✨</button>
+        <button onclick="sendChatEmoji('😎')" class="btn-cute text-lg sm:text-xl hover:scale-125 px-1">😎</button>
+        <button onclick="sendChatEmoji('🚀')" class="btn-cute text-lg sm:text-xl hover:scale-125 px-1">🚀</button>
+        <button onclick="sendChatEmoji('🦄')" class="btn-cute text-lg sm:text-xl hover:scale-125 px-1">🦄</button>
     </div>
 
-    <footer class="w-full max-w-6xl flex items-center justify-between gap-4 z-10 px-2 mb-1">
-        <div class="hidden sm:flex flex-col gap-1 text-xs font-bold text-purple-700/80 bg-white/60 p-3 rounded-2xl border border-white">
-            <div>🎮 P1: Arrow Keys / WASD | P2: IJKL</div>
+    <!-- Compact Footer Controls -->
+    <footer class="w-full max-w-5xl flex items-center justify-between gap-2 z-10 px-1 shrink-0">
+        <div class="hidden sm:flex flex-col gap-0.5 text-[11px] font-bold text-purple-700/80 bg-white/60 p-2 rounded-xl border border-white">
+            <div>🎮 P1: Arrow Keys / Swipe Board</div>
             <div>✨ Collect Power-ups & Paint fast!</div>
         </div>
 
         <!-- Dynamic Control Container (D-Pad) -->
-        <div id="controls-container" class="mx-auto sm:mx-0 flex items-center justify-center w-44 h-36 sm:w-48 sm:h-36 p-1 bg-white/40 rounded-3xl border-2 border-white/60 backdrop-blur-sm">
+        <div id="controls-container" class="mx-auto sm:mx-0 flex items-center justify-center w-36 h-32 sm:w-42 sm:h-32 p-1 bg-white/40 rounded-2xl border-2 border-white/60 backdrop-blur-sm">
             <!-- Rendered dynamically -->
         </div>
 
-        <div class="flex flex-col sm:flex-row gap-2">
-            <button id="btn-sound" class="btn-cute bg-purple-400 hover:bg-purple-500 text-white font-fredoka p-3 sm:px-4 sm:py-3 rounded-2xl text-sm flex items-center justify-center gap-1 shadow-md">
+        <div class="flex flex-col sm:flex-row gap-1.5">
+            <button id="btn-sound" class="btn-cute bg-purple-400 hover:bg-purple-500 text-white font-fredoka px-3 py-2 rounded-xl text-xs flex items-center justify-center gap-1 shadow-md">
                 🔊 <span class="hidden sm:inline">Audio</span>
             </button>
-            <button id="btn-menu" class="btn-cute bg-pink-400 hover:bg-pink-500 text-white font-fredoka p-3 sm:px-4 sm:py-3 rounded-2xl text-sm flex items-center justify-center gap-1 shadow-md">
+            <button id="btn-menu" class="btn-cute bg-pink-400 hover:bg-pink-500 text-white font-fredoka px-3 py-2 rounded-xl text-xs flex items-center justify-center gap-1 shadow-md">
                 🎨 <span class="hidden sm:inline">Menu</span>
             </button>
         </div>
     </footer>
 
     <!-- Modals Overlay -->
-    <div id="modal-overlay" class="fixed inset-0 z-50 bg-purple-900/40 backdrop-blur-md flex items-center justify-center p-4">
+    <div id="modal-overlay" class="fixed inset-0 z-50 bg-purple-900/40 backdrop-blur-md flex items-center justify-center p-3">
         
         <!-- Start / Customization Menu Card -->
-        <div id="start-card" class="glass-panel max-w-lg w-full max-h-[90vh] overflow-y-auto rounded-3xl p-6 text-center border-4 border-white shadow-2xl space-y-4">
-            <div class="text-5xl animate-bounce">🎨✨</div>
-            <h1 class="font-fredoka text-3xl sm:text-4xl text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500">
+        <div id="start-card" class="glass-panel max-w-lg w-full max-h-[92vh] overflow-y-auto rounded-3xl p-5 text-center border-4 border-white shadow-2xl space-y-3">
+            <div class="text-4xl animate-bounce">🎨✨</div>
+            <h1 class="font-fredoka text-2xl sm:text-3xl text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500">
                 Glow Bunny Paint Party
             </h1>
-            <p class="text-purple-800 text-xs sm:text-sm font-semibold">
-                Choose game modes, customize 80+ skins, boards, and touch controls!
+            <p class="text-purple-800 text-xs font-semibold">
+                Choose game modes, customize 80+ skins, boards, and swipe controls!
             </p>
 
             <!-- Mode Selector Dropdown Tabs -->
             <div class="grid grid-cols-2 gap-2 bg-white/70 p-2 rounded-2xl border border-pink-200">
                 <div>
-                    <label class="font-fredoka text-purple-700 text-xs block mb-1">Single Player Modes:</label>
-                    <select id="single-mode-select" class="w-full p-2 rounded-xl border-2 border-purple-300 font-fredoka text-xs text-purple-900 bg-white shadow-inner">
+                    <label class="font-fredoka text-purple-700 text-[11px] block mb-1">Single Player Modes:</label>
+                    <select id="single-mode-select" class="w-full p-1.5 rounded-xl border-2 border-purple-300 font-fredoka text-xs text-purple-900 bg-white shadow-inner">
                         <option value="pvccom">Player vs COM</option>
                         <option value="pvccomboss">Player vs COM vs Boss</option>
                     </select>
                 </div>
                 <div>
-                    <label class="font-fredoka text-purple-700 text-xs block mb-1">Multiplayer Modes:</label>
-                    <select id="multi-mode-select" class="w-full p-2 rounded-xl border-2 border-purple-300 font-fredoka text-xs text-purple-900 bg-white shadow-inner">
+                    <label class="font-fredoka text-purple-700 text-[11px] block mb-1">Multiplayer Modes:</label>
+                    <select id="multi-mode-select" class="w-full p-1.5 rounded-xl border-2 border-purple-300 font-fredoka text-xs text-purple-900 bg-white shadow-inner">
                         <option value="none">-- Select Multiplayer --</option>
                         <option value="pvp">Player vs Player (Local)</option>
                         <option value="network">Player vs Friend (Network)</option>
@@ -222,70 +223,70 @@
                 </div>
             </div>
 
-            <!-- Customization Target Selector (Player 1, Player 2, Boss) -->
-            <div class="flex justify-center gap-1.5 flex-wrap">
-                <button id="tab-custom-p1" onclick="switchCustomTarget('p1')" class="btn-cute px-3 py-1.5 rounded-xl font-fredoka text-xs bg-cyan-500 text-white shadow">🐰 Player 1</button>
-                <button id="tab-custom-p2" onclick="switchCustomTarget('p2')" class="btn-cute px-3 py-1.5 rounded-xl font-fredoka text-xs bg-white/70 text-purple-800 shadow">🐱 Opponent / P2</button>
-                <button id="tab-custom-boss" onclick="switchCustomTarget('boss')" class="btn-cute px-3 py-1.5 rounded-xl font-fredoka text-xs bg-white/70 text-purple-800 shadow">🐉 Boss</button>
+            <!-- Customization Target Selector -->
+            <div class="flex justify-center gap-1 flex-wrap">
+                <button id="tab-custom-p1" onclick="switchCustomTarget('p1')" class="btn-cute px-2.5 py-1 rounded-xl font-fredoka text-xs bg-cyan-500 text-white shadow">🐰 Player 1</button>
+                <button id="tab-custom-p2" onclick="switchCustomTarget('p2')" class="btn-cute px-2.5 py-1 rounded-xl font-fredoka text-xs bg-white/70 text-purple-800 shadow">🐱 Opponent / P2</button>
+                <button id="tab-custom-boss" onclick="switchCustomTarget('boss')" class="btn-cute px-2.5 py-1 rounded-xl font-fredoka text-xs bg-white/70 text-purple-800 shadow">🐉 Boss</button>
             </div>
 
             <!-- Character Skin Category Selector Tabs -->
-            <div class="flex justify-center gap-2">
-                <button id="tab-animal" onclick="switchSkinCategory('animal')" class="btn-cute px-3 py-1.5 rounded-xl font-fredoka text-xs bg-purple-500 text-white shadow">🐾 Animals</button>
-                <button id="tab-holiday" onclick="switchSkinCategory('holiday')" class="btn-cute px-3 py-1.5 rounded-xl font-fredoka text-xs bg-white/70 text-purple-800 shadow">🎃 Holidays</button>
-                <button id="tab-fruit" onclick="switchSkinCategory('fruit')" class="btn-cute px-3 py-1.5 rounded-xl font-fredoka text-xs bg-white/70 text-purple-800 shadow">🍓 Fruits</button>
-                <button id="tab-transport" onclick="switchSkinCategory('transport')" class="btn-cute px-3 py-1.5 rounded-xl font-fredoka text-xs bg-white/70 text-purple-800 shadow">🚀 Vehicles</button>
+            <div class="flex justify-center gap-1.5">
+                <button id="tab-animal" onclick="switchSkinCategory('animal')" class="btn-cute px-2.5 py-1 rounded-xl font-fredoka text-xs bg-purple-500 text-white shadow">🐾 Animals</button>
+                <button id="tab-holiday" onclick="switchSkinCategory('holiday')" class="btn-cute px-2.5 py-1 rounded-xl font-fredoka text-xs bg-white/70 text-purple-800 shadow">🎃 Holidays</button>
+                <button id="tab-fruit" onclick="switchSkinCategory('fruit')" class="btn-cute px-2.5 py-1 rounded-xl font-fredoka text-xs bg-white/70 text-purple-800 shadow">🍓 Fruits</button>
+                <button id="tab-transport" onclick="switchSkinCategory('transport')" class="btn-cute px-2.5 py-1 rounded-xl font-fredoka text-xs bg-white/70 text-purple-800 shadow">🚀 Vehicles</button>
             </div>
 
             <!-- Skin Selector Grid -->
             <div class="text-left">
-                <label id="skin-label" class="font-fredoka text-purple-700 text-sm">1. Choose Skin (20 Types):</label>
-                <div id="character-selector" class="grid grid-cols-4 sm:grid-cols-5 gap-2 max-h-32 overflow-y-auto p-2 bg-white/70 rounded-2xl border border-pink-200 mt-1">
+                <label id="skin-label" class="font-fredoka text-purple-700 text-xs">1. Choose Skin:</label>
+                <div id="character-selector" class="grid grid-cols-4 sm:grid-cols-5 gap-1.5 max-h-28 overflow-y-auto p-1.5 bg-white/70 rounded-2xl border border-pink-200 mt-1">
                     <!-- Populated dynamically -->
                 </div>
             </div>
 
             <!-- Color Palette Selector -->
             <div class="text-left">
-                <label class="font-fredoka text-purple-700 text-sm">2. Choose Glow Color (20 Shades):</label>
-                <div id="color-selector" class="grid grid-cols-5 sm:grid-cols-10 gap-1.5 max-h-24 overflow-y-auto p-2 bg-white/70 rounded-2xl border border-pink-200 mt-1">
+                <label class="font-fredoka text-purple-700 text-xs">2. Choose Glow Color:</label>
+                <div id="color-selector" class="grid grid-cols-5 sm:grid-cols-10 gap-1 max-h-20 overflow-y-auto p-1.5 bg-white/70 rounded-2xl border border-pink-200 mt-1">
                     <!-- Populated dynamically -->
                 </div>
             </div>
 
             <!-- Board Selector Grid -->
             <div class="text-left">
-                <label class="font-fredoka text-purple-700 text-sm">3. Choose Board Layout (20 Boards):</label>
-                <div id="board-selector" class="grid grid-cols-2 sm:grid-cols-4 gap-2 max-h-24 overflow-y-auto p-2 bg-white/70 rounded-2xl border border-pink-200 mt-1">
+                <label class="font-fredoka text-purple-700 text-xs">3. Choose Board Layout:</label>
+                <div id="board-selector" class="grid grid-cols-2 sm:grid-cols-4 gap-1.5 max-h-20 overflow-y-auto p-1.5 bg-white/70 rounded-2xl border border-pink-200 mt-1">
                     <!-- Populated dynamically -->
                 </div>
             </div>
 
-            <button id="btn-start" class="btn-cute w-full py-3.5 bg-gradient-to-r from-cyan-400 to-purple-400 hover:from-cyan-500 hover:to-purple-500 text-white font-fredoka text-xl rounded-2xl shadow-lg border-2 border-white">
+            <button id="btn-start" class="btn-cute w-full py-3 bg-gradient-to-r from-cyan-400 to-purple-400 hover:from-cyan-500 hover:to-purple-500 text-white font-fredoka text-lg rounded-2xl shadow-lg border-2 border-white">
                 Start Painting! 🌈
             </button>
         </div>
 
         <!-- Victory Result Card -->
-        <div id="result-card" class="glass-panel max-w-md w-full rounded-3xl p-6 text-center border-4 border-white shadow-2xl space-y-4 hidden">
-            <div id="result-emoji" class="text-7xl animate-pulse">🏆</div>
-            <h2 id="result-title" class="font-fredoka text-3xl sm:text-4xl text-cyan-600">Player 1 Wins!</h2>
-            <div id="result-stars" class="text-4xl space-x-1">⭐⭐⭐</div>
-            <p id="result-subtitle" class="text-purple-800 font-bold text-base">You painted 68% of the board!</p>
+        <div id="result-card" class="glass-panel max-w-md w-full rounded-3xl p-5 text-center border-4 border-white shadow-2xl space-y-3 hidden">
+            <div id="result-emoji" class="text-6xl animate-pulse">🏆</div>
+            <h2 id="result-title" class="font-fredoka text-2xl sm:text-3xl text-cyan-600">Player 1 Wins!</h2>
+            <div id="result-stars" class="text-3xl space-x-1">⭐⭐⭐</div>
+            <p id="result-subtitle" class="text-purple-800 font-bold text-xs sm:text-sm">You painted 68% of the board!</p>
 
-            <div class="bg-white/80 p-4 rounded-2xl flex justify-around items-center border border-purple-200 font-fredoka">
+            <div class="bg-white/80 p-3 rounded-2xl flex justify-around items-center border border-purple-200 font-fredoka">
                 <div>
-                    <div id="final-p1-label" class="text-xs text-cyan-400">Player 1</div>
-                    <div id="final-p1-score" class="text-2xl text-cyan-500">68%</div>
+                    <div id="final-p1-label" class="text-[10px] text-cyan-400">Player 1</div>
+                    <div id="final-p1-score" class="text-xl text-cyan-500">68%</div>
                 </div>
-                <div class="text-2xl text-slate-300">VS</div>
+                <div class="text-xl text-slate-300">VS</div>
                 <div>
-                    <div id="final-p2-label" class="text-xs text-pink-400">Opponent</div>
-                    <div id="final-p2-score" class="text-2xl text-pink-500">32%</div>
+                    <div id="final-p2-label" class="text-[10px] text-pink-400">Opponent</div>
+                    <div id="final-p2-score" class="text-xl text-pink-500">32%</div>
                 </div>
             </div>
 
-            <button id="btn-play-again" class="btn-cute w-full py-4 bg-gradient-to-r from-cyan-400 to-purple-400 hover:from-cyan-500 hover:to-purple-500 text-white font-fredoka text-xl rounded-2xl shadow-lg border-2 border-white">
+            <button id="btn-play-again" class="btn-cute w-full py-3.5 bg-gradient-to-r from-cyan-400 to-purple-400 hover:from-cyan-500 hover:to-purple-500 text-white font-fredoka text-lg rounded-2xl shadow-lg border-2 border-white">
                 Play Again! 🌟
             </button>
         </div>
@@ -353,8 +354,12 @@
         let timerInterval = null;
 
         let currentGameMode = 'pvccom';
-        let customTarget = 'p1'; // 'p1', 'p2', or 'boss'
-        let isRandomBoard = true; // Default to true so it randomizes nicely
+        let customTarget = 'p1';
+        let isRandomBoard = true;
+
+        // Touch gesture tracking variables
+        let touchStartX = 0;
+        let touchStartY = 0;
 
         const SKIN_CATEGORIES = {
             animal: [
@@ -510,13 +515,13 @@
                 <button id="btn-up" class="dpad-btn text-purple-600 active:scale-95">▲</button>
                 <div></div>
                 <button id="btn-left" class="dpad-btn text-purple-600 active:scale-95">◄</button>
-                <div class="flex items-center justify-center text-xl">🌈</div>
+                <div class="flex items-center justify-center text-lg">🌈</div>
                 <button id="btn-right" class="dpad-btn text-purple-600 active:scale-95">►</button>
                 <div></div>
                 <button id="btn-down" class="dpad-btn text-purple-600 active:scale-95">▼</button>
                 <div></div>
             `;
-            container.className = "mx-auto sm:mx-0 grid grid-cols-3 gap-1.5 w-44 h-36 sm:w-48 sm:h-36 p-1 bg-white/40 rounded-3xl border-2 border-white/60 backdrop-blur-sm";
+            container.className = "mx-auto sm:mx-0 grid grid-cols-3 gap-1 w-36 h-32 sm:w-42 sm:h-32 p-1 bg-white/40 rounded-2xl border-2 border-white/60 backdrop-blur-sm";
             bindDpadEvents();
         }
 
@@ -547,6 +552,62 @@
             });
         }
 
+        // Enable canvas direct touch/swipe handlers
+        function setupCanvasTouchControls() {
+            canvas.addEventListener('touchstart', (e) => {
+                if (e.touches.length > 0) {
+                    sfx.init();
+                    touchStartX = e.touches[0].clientX;
+                    touchStartY = e.touches[0].clientY;
+                }
+            }, { passive: true });
+
+            canvas.addEventListener('touchmove', (e) => {
+                if (!isGameRunning || e.touches.length === 0) return;
+                const touchX = e.touches[0].clientX;
+                const touchY = e.touches[0].clientY;
+
+                const diffX = touchX - touchStartX;
+                const diffY = touchY - touchStartY;
+
+                const threshold = 15; // sensitivity threshold
+                if (Math.abs(diffX) > threshold || Math.abs(diffY) > threshold) {
+                    keys.up = false; keys.down = false; keys.left = false; keys.right = false;
+                    if (Math.abs(diffX) > Math.abs(diffY)) {
+                        if (diffX > 0) keys.right = true;
+                        else keys.left = true;
+                    } else {
+                        if (diffY > 0) keys.down = true;
+                        else keys.up = true;
+                    }
+                }
+            }, { passive: true });
+
+            canvas.addEventListener('touchend', () => {
+                // Keep moving in the swiped direction or let player tap for destination steering
+            }, { passive: true });
+
+            // Also allow clicking/tapping anywhere on canvas to steer towards it
+            canvas.addEventListener('click', (e) => {
+                if (!isGameRunning) return;
+                const rect = canvas.getBoundingClientRect();
+                const clickX = (e.clientX - rect.left) * (canvas.width / rect.width);
+                const clickY = (e.clientY - rect.top) * (canvas.height / rect.height);
+
+                const diffX = clickX - player1.px;
+                const diffY = clickY - player1.py;
+
+                keys.up = false; keys.down = false; keys.left = false; keys.right = false;
+                if (Math.abs(diffX) > Math.abs(diffY)) {
+                    if (diffX > 0) keys.right = true;
+                    else keys.left = true;
+                } else {
+                    if (diffY > 0) keys.down = true;
+                    else keys.up = true;
+                }
+            });
+        }
+
         function sendChatEmoji(emoji) {
             sfx.init(); sfx.pop();
             chatBubbles.push({
@@ -560,9 +621,9 @@
             ['p1', 'p2', 'boss'].forEach(t => {
                 const btn = document.getElementById(`tab-custom-${t}`);
                 if (t === target) {
-                    btn.className = `btn-cute px-3 py-1.5 rounded-xl font-fredoka text-xs ${t === 'p1' ? 'bg-cyan-500' : (t === 'p2' ? 'bg-pink-500' : 'bg-amber-500')} text-white shadow`;
+                    btn.className = `btn-cute px-2.5 py-1 rounded-xl font-fredoka text-xs ${t === 'p1' ? 'bg-cyan-500' : (t === 'p2' ? 'bg-pink-500' : 'bg-amber-500')} text-white shadow`;
                 } else {
-                    btn.className = 'btn-cute px-3 py-1.5 rounded-xl font-fredoka text-xs bg-white/70 text-purple-800 shadow';
+                    btn.className = 'btn-cute px-2.5 py-1 rounded-xl font-fredoka text-xs bg-white/70 text-purple-800 shadow';
                 }
             });
             populateMenus();
@@ -573,9 +634,9 @@
             ['animal', 'holiday', 'fruit', 'transport'].forEach(c => {
                 const btn = document.getElementById(`tab-${c}`);
                 if (c === cat) {
-                    btn.className = 'btn-cute px-3 py-1.5 rounded-xl font-fredoka text-xs bg-purple-500 text-white shadow';
+                    btn.className = 'btn-cute px-2.5 py-1 rounded-xl font-fredoka text-xs bg-purple-500 text-white shadow';
                 } else {
-                    btn.className = 'btn-cute px-3 py-1.5 rounded-xl font-fredoka text-xs bg-white/70 text-purple-800 shadow';
+                    btn.className = 'btn-cute px-2.5 py-1 rounded-xl font-fredoka text-xs bg-white/70 text-purple-800 shadow';
                 }
             });
             document.getElementById('skin-label').textContent = `1. Choose ${cat.charAt(0).toUpperCase() + cat.slice(1)} Skin:`;
@@ -590,8 +651,8 @@
             SKIN_CATEGORIES[currentCategory].forEach((char) => {
                 const btn = document.createElement('button');
                 const isSelected = activeChar.charType.id === char.id;
-                btn.className = `p-2 rounded-2xl flex flex-col items-center justify-center border-2 transition-all ${isSelected ? 'border-cyan-500 bg-cyan-100 shadow-md scale-105' : 'border-white bg-white/60 hover:bg-white'}`;
-                btn.innerHTML = `<span class="text-2xl">${char.icon}</span><span class="text-[10px] font-bold text-purple-900 mt-0.5 truncate w-full text-center">${char.name}</span>`;
+                btn.className = `p-1.5 rounded-xl flex flex-col items-center justify-center border-2 transition-all ${isSelected ? 'border-cyan-500 bg-cyan-100 shadow-md scale-105' : 'border-white bg-white/60 hover:bg-white'}`;
+                btn.innerHTML = `<span class="text-xl">${char.icon}</span><span class="text-[9px] font-bold text-purple-900 mt-0.5 truncate w-full text-center">${char.name}</span>`;
                 
                 btn.onclick = () => {
                     activeChar.charType = char;
@@ -606,7 +667,7 @@
             COLOR_SWATCHES.forEach((swatch) => {
                 const btn = document.createElement('button');
                 const isSelectedCol = activeChar.colorSwatch.hex === swatch.hex;
-                btn.className = `w-7 h-7 rounded-full border-2 transition-transform ${isSelectedCol ? 'border-purple-800 scale-125 shadow-lg' : 'border-white hover:scale-110'}`;
+                btn.className = `w-6 h-6 rounded-full border-2 transition-transform ${isSelectedCol ? 'border-purple-800 scale-125 shadow-lg' : 'border-white hover:scale-110'}`;
                 btn.style.backgroundColor = swatch.hex;
                 btn.title = swatch.name;
                 btn.onclick = () => {
@@ -622,7 +683,7 @@
             boardContainer.innerHTML = '';
 
             const randomBtn = document.createElement('button');
-            randomBtn.className = `p-2 rounded-2xl text-xs font-bold transition-all border-2 text-center truncate ${isRandomBoard ? 'border-pink-500 bg-pink-200 text-pink-800 shadow-md scale-105' : 'border-pink-400 bg-pink-100 text-pink-700 hover:bg-pink-200'}`;
+            randomBtn.className = `p-1.5 rounded-xl text-xs font-bold transition-all border-2 text-center truncate ${isRandomBoard ? 'border-pink-500 bg-pink-200 text-pink-800 shadow-md scale-105' : 'border-pink-400 bg-pink-100 text-pink-700 hover:bg-pink-200'}`;
             randomBtn.textContent = '🎲 Random';
             randomBtn.title = 'Pick a random board layout every round';
             randomBtn.onclick = () => {
@@ -634,7 +695,7 @@
             BOARD_LAYOUTS.forEach((board, idx) => {
                 const btn = document.createElement('button');
                 const isSelectedBoard = !isRandomBoard && idx === selectedBoardIndex;
-                btn.className = `p-2 rounded-2xl text-xs font-bold transition-all border-2 text-center truncate ${isSelectedBoard ? 'border-purple-500 bg-purple-100 text-purple-700 shadow-md scale-105' : 'border-white bg-white/60 text-purple-800 hover:bg-white'}`;
+                btn.className = `p-1.5 rounded-xl text-xs font-bold transition-all border-2 text-center truncate ${isSelectedBoard ? 'border-purple-500 bg-purple-100 text-purple-700 shadow-md scale-105' : 'border-white bg-white/60 text-purple-800 hover:bg-white'}`;
                 btn.style.backgroundColor = board.themeColor;
                 btn.textContent = board.name.split(':')[0];
                 btn.title = board.name;
@@ -1116,7 +1177,7 @@
                     if (wallGrid[r][c] === 1) {
                         ctx.fillStyle = '#f1f5f9';
                         ctx.beginPath();
-                        ctx.roundRect(x + 1, y + 1, cellSize - 2, cellSize - 2, 6);
+                        ctx.roundRect(x + 1, y + 1, cellSize - 2, cellSize - 2, 4);
                         ctx.fill();
                         ctx.strokeStyle = '#cbd5e1';
                         ctx.lineWidth = 2;
@@ -1129,22 +1190,22 @@
                     } else if (cellState === 1) {
                         ctx.fillStyle = player1.trailColor;
                         ctx.beginPath();
-                        ctx.roundRect(x + 1, y + 1, cellSize - 2, cellSize - 2, 6);
+                        ctx.roundRect(x + 1, y + 1, cellSize - 2, cellSize - 2, 4);
                         ctx.fill();
                     } else if (cellState === 2) {
                         ctx.fillStyle = player2.trailColor;
                         ctx.beginPath();
-                        ctx.roundRect(x + 1, y + 1, cellSize - 2, cellSize - 2, 6);
+                        ctx.roundRect(x + 1, y + 1, cellSize - 2, cellSize - 2, 4);
                         ctx.fill();
                     } else if (cellState === 3) {
                         ctx.fillStyle = boss.trailColor;
                         ctx.beginPath();
-                        ctx.roundRect(x + 1, y + 1, cellSize - 2, cellSize - 2, 6);
+                        ctx.roundRect(x + 1, y + 1, cellSize - 2, cellSize - 2, 4);
                         ctx.fill();
                     } else {
                         ctx.fillStyle = (r + c) % 2 === 0 ? '#ffffff' : '#f8fafc';
                         ctx.beginPath();
-                        ctx.roundRect(x + 1, y + 1, cellSize - 2, cellSize - 2, 6);
+                        ctx.roundRect(x + 1, y + 1, cellSize - 2, cellSize - 2, 4);
                         ctx.fill();
                     }
                     ctx.restore();
@@ -1175,7 +1236,7 @@
                 ctx.restore();
 
                 ctx.save();
-                ctx.font = 'bold 10px "Fredoka One", sans-serif';
+                ctx.font = 'bold 9px "Fredoka One", sans-serif';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'bottom';
                 ctx.fillStyle = '#1e293b';
@@ -1190,7 +1251,7 @@
 
             const swatch = entity.colorSwatch;
             const icon = entity.charType.icon;
-            const size = cellSize * 2.4;
+            const size = cellSize * 2.2;
 
             if (entity.powerup === 'ghost') {
                 ctx.globalAlpha = 0.55;
@@ -1204,7 +1265,7 @@
                 ctx.fill();
                 ctx.stroke();
 
-                ctx.font = '18px sans-serif';
+                ctx.font = '16px sans-serif';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
                 ctx.fillText('👻', 0, -size * 0.5);
@@ -1221,12 +1282,11 @@
                 ctx.fill();
                 ctx.stroke();
 
-                ctx.font = '14px sans-serif';
+                ctx.font = '12px sans-serif';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
                 ctx.fillText('❄️', -size * 0.3, -size * 0.2);
                 ctx.fillText('🌨️', size * 0.3, -size * 0.25);
-                ctx.fillText('✨', 0, size * 0.35);
             }
 
             if (entity.danceTimer > 0) {
@@ -1234,19 +1294,17 @@
                 const time = Date.now() * 0.015;
                 ctx.rotate(time);
                 ctx.fillStyle = '#a855f7';
-                ctx.font = '22px sans-serif';
+                ctx.font = '20px sans-serif';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
                 ctx.fillText('🪩', 0, -size * 0.65);
                 ctx.restore();
 
                 ctx.save();
-                ctx.font = 'bold 16px "Fredoka One", sans-serif';
+                ctx.font = 'bold 14px "Fredoka One", sans-serif';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
                 ctx.fillStyle = '#ef4444';
-                ctx.shadowColor = '#ffffff';
-                ctx.shadowBlur = 6;
                 ctx.fillText('STUN!', 0, -size * 0.35);
                 ctx.restore();
             }
@@ -1257,12 +1315,12 @@
                 ctx.arc(0, 0, size * 0.46, 0, Math.PI * 2);
                 ctx.fill();
 
-                ctx.font = `${cellSize * 1.3}px sans-serif`;
+                ctx.font = `${cellSize * 1.2}px sans-serif`;
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
                 ctx.fillText(icon, 0, 0);
             } else if (entity.powerup === 'ghost') {
-                ctx.font = `${cellSize * 1.3}px sans-serif`;
+                ctx.font = `${cellSize * 1.2}px sans-serif`;
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
                 ctx.fillText(icon, 0, 0);
@@ -1271,10 +1329,10 @@
             ctx.restore();
 
             ctx.save();
-            ctx.font = 'bold 12px "Fredoka One", sans-serif';
+            ctx.font = 'bold 11px "Fredoka One", sans-serif';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'bottom';
-            const textWidth = ctx.measureText(labelName).width + 12;
+            const textWidth = ctx.measureText(labelName).width + 10;
             const tagX = entity.px;
             const tagY = entity.py - size * 0.65;
 
@@ -1282,7 +1340,7 @@
             ctx.strokeStyle = swatch.hex;
             ctx.lineWidth = 2;
             ctx.beginPath();
-            ctx.roundRect(tagX - textWidth / 2, tagY - 18, textWidth, 20, 10);
+            ctx.roundRect(tagX - textWidth / 2, tagY - 16, textWidth, 18, 8);
             ctx.fill();
             ctx.stroke();
 
@@ -1305,7 +1363,7 @@
             chatBubbles.forEach(b => {
                 ctx.save();
                 ctx.globalAlpha = b.alpha;
-                ctx.font = '32px sans-serif';
+                ctx.font = '28px sans-serif';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
                 ctx.fillText(b.emoji, b.x, b.y);
@@ -1465,6 +1523,7 @@
             });
 
             buildControlsUI();
+            setupCanvasTouchControls();
 
             document.getElementById('btn-start').addEventListener('click', startGame);
             document.getElementById('btn-play-again').addEventListener('click', startGame);
