@@ -231,11 +231,11 @@
                     <span id="net-status" class="text-[10px] text-amber-600 font-bold">Disconnected</span>
                 </h3>
                 <div class="flex gap-2 items-center">
-                    <button id="btn-host-game" class="btn-cute bg-purple-500 text-white font-fredoka text-xs px-3 py-2 rounded-xl shadow">Create Room (Host)</button>
-                    <div id="host-id-display" class="font-fredoka text-xs text-purple-700 bg-white px-2 py-1.5 rounded-xl border border-purple-200 flex-1 truncate select-all">Room ID: ---</div>
+                    <button id="btn-host-game" class="btn-cute bg-purple-500 text-white font-fredoka text-xs px-3 py-2 rounded-xl shadow">Create Custom Room</button>
+                    <div id="host-id-display" class="font-fredoka text-xs text-purple-700 bg-white px-2 py-1.5 rounded-xl border border-purple-200 flex-1 truncate select-all">Room: ---</div>
                 </div>
                 <div class="flex gap-2 items-center pt-1 border-t border-purple-200">
-                    <input type="text" id="input-host-id" placeholder="Paste Host ID here..." class="font-fredoka text-xs px-2.5 py-2 rounded-xl border-2 border-purple-300 bg-white flex-1 focus:outline-none focus:border-purple-500">
+                    <input type="text" id="input-host-id" placeholder="Enter short room name (e.g. room1)..." class="font-fredoka text-xs px-2.5 py-2 rounded-xl border-2 border-purple-300 bg-white flex-1 focus:outline-none focus:border-purple-500">
                     <button id="btn-join-game" class="btn-cute bg-cyan-500 text-white font-fredoka text-xs px-3 py-2 rounded-xl shadow">Join Room</button>
                 </div>
             </div>
@@ -680,21 +680,34 @@
             document.getElementById('single-mode-select').value = '';
             if (currentGameMode === 'network') {
                 document.getElementById('network-lobby').classList.remove('hidden');
-                initPeerNetwork();
             } else {
                 document.getElementById('network-lobby').classList.add('hidden');
             }
             populateMenus();
         });
 
-        // --- WebRTC PeerJS Setup ---
-        function initPeerNetwork() {
-            if (peer) return;
-            peer = new Peer();
+        // --- WebRTC PeerJS Setup with Short Room IDs ---
+        document.getElementById('btn-host-game').addEventListener('click', () => {
+            const customId = prompt("Enter a short room name (e.g., 'room1'):", "room1");
+            if (!customId) return;
+
+            if (peer) peer.destroy();
+
+            peer = new Peer(customId);
 
             peer.on('open', (id) => {
-                document.getElementById('net-status').textContent = 'Ready in Lobby';
+                document.getElementById('host-id-display').textContent = `Room: ${id}`;
+                document.getElementById('net-status').textContent = 'Hosting Short Room Ready! 🎉';
                 document.getElementById('net-status').className = 'text-[10px] text-cyan-600 font-bold';
+            });
+
+            peer.on('error', (err) => {
+                if (err.type === 'unavailable-id') {
+                    alert('That room name is already taken! Try another one.');
+                    document.getElementById('net-status').textContent = 'ID Taken - Try Again';
+                } else {
+                    document.getElementById('net-status').textContent = 'Connection Error';
+                }
             });
 
             peer.on('connection', (connection) => {
@@ -704,28 +717,26 @@
                 document.getElementById('net-status').textContent = 'Connected with Friend! 🎉';
                 document.getElementById('net-status').className = 'text-[10px] text-green-600 font-bold';
             });
-        }
-
-        document.getElementById('btn-host-game').addEventListener('click', () => {
-            if (!peer) initPeerNetwork();
-            setTimeout(() => {
-                if (peer.id) {
-                    document.getElementById('host-id-display').textContent = `Room ID: ${peer.id}`;
-                    document.getElementById('net-status').textContent = 'Hosting Room... Waiting for Friend';
-                }
-            }, 500);
         });
 
         document.getElementById('btn-join-game').addEventListener('click', () => {
             const hostId = document.getElementById('input-host-id').value.trim();
-            if (!hostId) { alert('Please enter the Host Room ID first!'); return; }
-            if (!peer) initPeerNetwork();
+            if (!hostId) { alert('Please enter the short room name first!'); return; }
 
-            setTimeout(() => {
+            if (peer) peer.destroy();
+
+            peer = new Peer();
+
+            peer.on('open', () => {
                 conn = peer.connect(hostId);
                 isHost = false;
                 setupConnectionEvents();
-            }, 500);
+            });
+
+            peer.on('error', (err) => {
+                alert('Could not connect to room: ' + hostId);
+                document.getElementById('net-status').textContent = 'Connection Failed';
+            });
         });
 
         function setupConnectionEvents() {
@@ -739,11 +750,11 @@
                     if (isHost) {
                         player2.x = data.x; player2.y = data.y;
                         player2.px = data.px; player2.py = data.py;
-                        grid = data.grid; // Sync painted cells from guest
+                        grid = data.grid;
                     } else {
                         player1.x = data.x; player1.y = data.y;
                         player1.px = data.px; player1.py = data.py;
-                        grid = data.grid; // Sync painted cells from host
+                        grid = data.grid;
                     }
                 } else if (data.type === 'chat') {
                     chatBubbles.push({
@@ -802,7 +813,6 @@
 
         function updateControllers() {
             if (currentGameMode === 'network') {
-                // Network Mode: Each device controls their own player character
                 let activePlayer = isHost ? player1 : player2;
                 let activeOwnerId = isHost ? 1 : 2;
 
@@ -824,7 +834,6 @@
                     }
                 }
             } else {
-                // Local / Singleplayer fallback movement
                 player1.dx = 0; player1.dy = 0;
                 if (keys.up || keys.w) player1.dy = -1;
                 if (keys.down || keys.s) player1.dy = 1;
